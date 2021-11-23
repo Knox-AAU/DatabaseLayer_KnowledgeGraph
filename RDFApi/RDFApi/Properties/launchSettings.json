@@ -4,17 +4,17 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:36618",
-      "sslPort": 44354
+      "applicationUrl": "http://localhost:46042",
+      "sslPort": 44369
     }
   },
   "profiles": {
-    "RdfDataAccess": {
+    "RDFApi": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
-      "applicationUrl": "https://localhost:7165;http://localhost:5165",
+      "applicationUrl": "https://localhost:7209;http://localhost:5209",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

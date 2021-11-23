@@ -5,16 +5,14 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-        <LangVersion>preview</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="dotNetRDF" Version="2.7.2" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers" />
+      <Folder Include="Development" />
     </ItemGroup>
 
 </Project>
