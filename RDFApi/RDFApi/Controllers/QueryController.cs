@@ -1,21 +1,31 @@
 ﻿using System;
+using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using VDS.RDF.Storage;
 
 namespace RDFApi.Controllers
 {
     public sealed class QueryController : Controller
     {
-        [HttpGet, Route("/[controller]/status")]
-        public IActionResult Status()
+        [HttpGet, Route("/[controller]/")]
+        public async Task<IActionResult> Query(string query)
         {
-            var vm = new VirtuosoManager(
-                Environment.GetEnvironmentVariable("DBA_HOST"), 
-                int.Parse(Environment.GetEnvironmentVariable("DBA_PORT")), 
-                "DB", 
-                Environment.GetEnvironmentVariable("DBA_USERNAME"), 
-                Environment.GetEnvironmentVariable("DBA_PASSWORD"));
-            return Ok(vm.IsReady);
+            string? virtuosoEndpoint = Environment.GetEnvironmentVariable("VIRTUOSO_ENDPOINT");
+            if (virtuosoEndpoint == null) 
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, "VIRTUOSO_ENDPOINT environment variable not set");
+            }
+
+            try
+            {
+                string queryResult = await new VirtuosoDataStore(virtuosoEndpoint).Query(query);
+                
+                return Ok(queryResult); 
+            }
+            catch (Exception e)
+            {
+                return StatusCode((int)HttpStatusCode.BadRequest, e.Message);
+            }
         }
     }
 }
