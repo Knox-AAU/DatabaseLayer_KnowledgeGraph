@@ -1,4 +1,4 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:latest
+﻿FROM mcr.microsoft.com/dotnet/sdk:6.0
 EXPOSE 80
 EXPOSE 443
 

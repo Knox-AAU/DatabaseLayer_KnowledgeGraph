@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using VDS.RDF.Storage;
 
 var builder = WebApplication.CreateBuilder(args);
 
