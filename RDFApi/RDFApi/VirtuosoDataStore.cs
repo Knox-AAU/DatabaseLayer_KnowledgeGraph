@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VDS.RDF;
 using VDS.RDF.Parsing;
@@ -63,7 +65,28 @@ namespace RDFApi
             sb.Append(turtle);
             sb.Append("} }");
 
+            GetRecordChunks(turtle);
+            Console.WriteLine("Len: " + turtle.Length);
+
             return await Query(sb.ToString());
+        }
+        
+        private List<string> GetRecordChunks(string query)
+        {
+            List<string> chunks = new();
+            Regex detectRDFRecordEnding = new(@"<.*?>\s+\.");
+            string[] lines = query.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+
+            int start = 0;
+            foreach (Match match in detectRDFRecordEnding.Matches(query))
+            {
+                chunks.Append(query.Substring(start, match.Index + match.Length));
+                start = match.Index + 1;
+            }
+
+            Console.WriteLine("LenC:" + chunks.Sum(x => x.Length));
+            Console.WriteLine($"Chunks: {chunks.Count}");
+            return chunks;
         }
     }
 }
