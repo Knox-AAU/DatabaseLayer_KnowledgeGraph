@@ -30,7 +30,7 @@ namespace RDFApi.Controllers
         }
         
         [HttpPost, Route("/[controller]/")]
-        public async Task<IActionResult> Insert(IFormFile turtleFile)
+        public async Task<IActionResult> Insert(string turtle, string graph)
         {
             string? virtuosoEndpoint = Environment.GetEnvironmentVariable("VIRTUOSO_ENDPOINT");
             if (virtuosoEndpoint == null) 
@@ -40,16 +40,9 @@ namespace RDFApi.Controllers
 
             try
             {
-                // Read the file
-                await using (var stream = new System.IO.MemoryStream())
-                {
-                    await turtleFile.CopyToAsync(stream);
-                    string turtle = System.Text.Encoding.UTF8.GetString(stream.ToArray());
+                string insertResponse = await new VirtuosoDataStore(virtuosoEndpoint).InsertTurtleGraph(turtle, graph);
 
-                    string insertResponse = await new VirtuosoDataStore(virtuosoEndpoint).InsertTurtleGraph(turtle);
-
-                    return Ok(insertResponse);
-                }
+                return Ok(insertResponse);
             }
             catch (Exception e)
             {

@@ -44,7 +44,7 @@ namespace RDFApi
             return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
-        public async Task<string> InsertTurtleGraph(string turtle)
+        public async Task<string> InsertTurtleGraph(string turtle, string graphName = "knox")
         {
             IGraph g = new Graph()
             {
@@ -57,10 +57,9 @@ namespace RDFApi
             
             Console.WriteLine($"Triples in graph: {g.Triples.Count}");
 
-            NTriplesFormatter formatter = new();
             StringBuilder sb = new();
             
-            sb.Append("INSERT DATA { GRAPH <pls> {");
+            sb.Append("INSERT DATA { GRAPH <{" + graphName + "> {");
             sb.Append(turtle);
             sb.Append("} }");
 
