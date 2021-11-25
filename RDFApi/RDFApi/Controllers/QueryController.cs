@@ -44,9 +44,11 @@ namespace RDFApi.Controllers
                 await using (var stream = new System.IO.MemoryStream())
                 {
                     await turtleFile.CopyToAsync(stream);
-                    string turtle = System.Text.Encoding.UTF8.GetString(stream.ToArray());
+                    string turtle = System.Text.Encoding.Default.GetString(stream.ToArray());
 
-                    return Ok(new VirtuosoDataStore(virtuosoEndpoint).InsertTurtleGraph(turtle));
+                    var p = await new VirtuosoDataStore(virtuosoEndpoint).InsertTurtleGraph(turtle);
+
+                    return Ok(p);
                 }
             }
             catch (Exception e)
