@@ -46,9 +46,9 @@ namespace RDFApi
 
         public async Task<string> InsertTurtleGraph(string turtle)
         {
-            Graph g = new()
+            IGraph g = new Graph()
             {
-                BaseUri = uri
+                BaseUri = uri,
             };
             
             GraphHandler graphHandler = new(g);
@@ -56,23 +56,15 @@ namespace RDFApi
             parser.Load(graphHandler, new StringReader(turtle));
             
             Console.WriteLine($"Triples in graph: {g.Triples.Count}");
-            
+
             NTriplesFormatter formatter = new();
             StringBuilder sb = new();
             
-            sb.Append("INSERT DATA {");
-            foreach (Triple gTriple in g.Triples)
-            {
-                sb.Append(gTriple.ToString(formatter));
-            }
-            sb.Append("}");
+            sb.Append("INSERT DATA { GRAPH <pls> {");
+            sb.Append(turtle);
+            sb.Append("} }");
 
-            UnicodeEncoding encoding = new();
-            byte[] bytes = encoding.GetBytes(sb.ToString());
-            char[] chars = encoding.GetChars(bytes);
-            string insertQuery = new(chars);
-            
-            return await Query(insertQuery);
+            return await Query(sb.ToString());
         }
     }
 }
