@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,21 +26,16 @@ namespace RDFApi
         
         public async Task<string> Query(string query)
         {
-            UriBuilder uriBuilder = new(endpoint)
-            {
-                Query = $"query={query}"
-            };
-            Console.WriteLine(query);
+            UriBuilder uriBuilder = new(endpoint);
 
-            HttpRequestMessage request = new()
+            var formContent = new FormUrlEncodedContent(new[]
             {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri(uriBuilder.ToString()),
-            };
+                new KeyValuePair<string, string>("query", query)
+            });
             
             HttpClient httpClient = new();
-            HttpResponseMessage response = await httpClient.SendAsync(request).ConfigureAwait(false);
-            
+            var response = await httpClient.PostAsync(uriBuilder.ToString(), formContent);
+
             if (!response.IsSuccessStatusCode)
             {
                 // Virtuoso sends errors in SPARQL through content, which we want to send to the users.
@@ -53,6 +50,7 @@ namespace RDFApi
         {
 
             Graph g = new();
+            g.BaseUri = new Uri("http://docker.internal.host:1111/");
             GraphHandler graphHandler = new(g);
             TurtleParser parser = new();
             parser.Load(graphHandler, new StringReader(turtle));
@@ -72,9 +70,9 @@ namespace RDFApi
             UnicodeEncoding encoding = new();
             byte[] bytes = encoding.GetBytes(sb.ToString());
             char[] chars = encoding.GetChars(bytes);
-            string insertQuery = new string(chars);
-
-            return insertQuery;
+            string insertQuery = new(chars);
+            
+            return await Query(insertQuery);
         }
     }
 }
