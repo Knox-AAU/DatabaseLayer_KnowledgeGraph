@@ -13,9 +13,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<IFileProvider>(
-    new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory())));
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
