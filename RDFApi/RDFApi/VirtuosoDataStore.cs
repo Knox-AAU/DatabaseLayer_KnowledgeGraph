@@ -26,13 +26,13 @@ namespace RDFApi
         {
             UriBuilder uriBuilder = new(endpoint);
 
-            var formContent = new FormUrlEncodedContent(new[]
+            FormUrlEncodedContent formContent = new FormUrlEncodedContent(new[]
             {
                 new KeyValuePair<string, string>("query", query)
             });
             
             HttpClient httpClient = new();
-            var response = await httpClient.PostAsync(uriBuilder.ToString(), formContent);
+            HttpResponseMessage response = await httpClient.PostAsync(uriBuilder.ToString(), formContent);
 
             if (!response.IsSuccessStatusCode)
             {
