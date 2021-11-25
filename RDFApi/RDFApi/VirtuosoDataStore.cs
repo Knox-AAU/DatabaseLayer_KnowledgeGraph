@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -57,15 +58,42 @@ namespace RDFApi
             TurtleParser parser = new();
             parser.Load(graphHandler, new StringReader(turtle));
             
-            Console.WriteLine($"Triples in graph: {g.Triples.Count}");
+            Console.WriteLine($"Triples in given graph: {g.Triples.Count}");
 
-            StringBuilder sb = new();
+            string[] chunkedQueries = ChunkRecords(turtle, "\n\n", 50);
+
+            foreach (string chunkedQuery in chunkedQueries)
+            {
+                StringBuilder sb = new();
+                
+                sb.Append("INSERT DATA { GRAPH <" + graphName + "> {");
+                sb.Append(chunkedQuery);
+                sb.Append("} }");
+ 
+                await Query(sb.ToString());
+            }
+
+            return "OK";
+        }
+
+        private string[] ChunkRecords(string input, string separator, int chunkSize = 10)
+        {
+            List<string> chunks = new();
+            string[] strings = input.Split(separator);
             
-            sb.Append("INSERT DATA { GRAPH <{" + graphName + "> {");
-            sb.Append(turtle);
-            sb.Append("} }");
+            for (int i = 0; i < strings.Length / chunkSize; i++)
+            {
+                string[] chunk = strings.Skip(i * chunkSize).Take(chunkSize).ToArray();
+                chunks.Add(string.Join(separator, chunk));
+            }
 
-            return await Query(sb.ToString());
+            int remainder = strings.Length % chunkSize;
+            int taken = chunks.Count * chunkSize;
+
+            string[] lastChunk = strings.Skip(taken).Take(remainder).ToArray();
+            chunks.Add(string.Join(separator, lastChunk));
+            
+            return chunks.ToArray();
         }
     }
 }
