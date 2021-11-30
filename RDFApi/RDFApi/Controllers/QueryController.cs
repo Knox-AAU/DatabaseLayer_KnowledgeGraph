@@ -27,5 +27,26 @@ namespace RDFApi.Controllers
                 return StatusCode((int)HttpStatusCode.BadRequest, e.Message);
             }
         }
+        
+        [HttpPost, Route("/[controller]/")]
+        public async Task<IActionResult> Insert(string turtle, string graph)
+        {
+            string? virtuosoEndpoint = Environment.GetEnvironmentVariable("VIRTUOSO_ENDPOINT");
+            if (virtuosoEndpoint == null) 
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, "VIRTUOSO_ENDPOINT environment variable not set");
+            }
+
+            try
+            {
+                string insertResponse = await new VirtuosoDataStore(virtuosoEndpoint).InsertTurtleGraph(turtle, graph);
+
+                return Ok(insertResponse);
+            }
+            catch (Exception e)
+            {
+                return StatusCode((int)HttpStatusCode.BadRequest, e.Message);
+            }
+        }
     }
 }
