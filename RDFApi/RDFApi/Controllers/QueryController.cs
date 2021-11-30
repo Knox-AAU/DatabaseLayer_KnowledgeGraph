@@ -39,7 +39,9 @@ namespace RDFApi.Controllers
 
             try
             {
-                string insertResponse = await new VirtuosoDataStore(virtuosoEndpoint).InsertTurtleGraph(turtle, graph);
+                string insertResponse = !String.IsNullOrEmpty(graph) ? 
+                    await new VirtuosoDataStore(virtuosoEndpoint).InsertTurtleGraph(turtle, graph) :
+                    await new VirtuosoDataStore(virtuosoEndpoint).InsertTurtleGraph(turtle);
 
                 return Ok(insertResponse);
             }

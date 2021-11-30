@@ -44,7 +44,7 @@ namespace RDFApi
             return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
-        public async Task<string> InsertTurtleGraph(string turtle, string graphName = "knox")
+        public async Task<string> InsertTurtleGraph(string turtle, string? graphName = "knox")
         {
             IGraph g = new Graph()
             {
