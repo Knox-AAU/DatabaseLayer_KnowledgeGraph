@@ -27,10 +27,3 @@ services:
       - rdfapi
     volumes:
       - virtuoso:/data
-
-networks:
-  rdfapi:
-    driver: bridge
-volumes:
-  virtuoso:
-    driver: local
