@@ -29,7 +29,7 @@ namespace RDFApi.Controllers
         }
         
         [HttpPost, Route("/[controller]/")]
-        public async Task<IActionResult> Insert(string turtle, string graph)
+        public async Task<IActionResult> Insert(string turtle, string? graph)
         {
             string? virtuosoEndpoint = Environment.GetEnvironmentVariable("VIRTUOSO_ENDPOINT");
             if (virtuosoEndpoint == null) 
