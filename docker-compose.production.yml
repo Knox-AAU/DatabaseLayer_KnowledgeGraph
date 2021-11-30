@@ -1,0 +1,36 @@
+services:
+  api:
+    image: ghcr.io/knox-aau/databaselayer_knowledgegraph:latest
+    ports:
+      - "5000:80"
+    networks:
+      - rdfapi
+    depends_on:
+      - db
+    environment:
+      DBA_HOST: ${DBA_HOST}
+      DBA_USERNAME: ${DBA_USERNAME}
+      DBA_PASSWORD: ${DBA_PASSWORD}
+      DBA_PORT: ${DBA_PORT}
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      VIRTUOSO_ENDPOINT: ${VIRTUOSO_ENDPOINT}
+    volumes:
+      - .:/app
+  db:
+    image: tenforce/virtuoso:latest
+    environment:
+      SPARQL_UPDATE: "true"
+      DBA_PASSWORD: ${DBA_PASSWORD}
+    ports:
+      - "8890:8890"
+    networks:
+      - rdfapi
+    volumes:
+      - virtuoso:/data
+
+networks:
+  rdfapi:
+    driver: bridge
+volumes:
+  virtuoso:
+    driver: local
