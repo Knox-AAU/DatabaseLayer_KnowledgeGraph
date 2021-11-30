@@ -14,8 +14,6 @@ services:
       DBA_PORT: ${DBA_PORT}
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
       VIRTUOSO_ENDPOINT: ${VIRTUOSO_ENDPOINT}
-    volumes:
-      - .:/app
   db:
     image: tenforce/virtuoso:latest
     environment:
@@ -27,3 +25,10 @@ services:
       - rdfapi
     volumes:
       - virtuoso:/data
+
+networks:
+  rdfapi:
+    driver: bridge
+volumes:
+  virtuoso:
+    driver: local
