@@ -11,7 +11,7 @@ namespace RDFApi.Controllers
         public async Task<IActionResult> Query(string query)
         {
             string? virtuosoEndpoint = Environment.GetEnvironmentVariable("VIRTUOSO_ENDPOINT");
-            if (virtuosoEndpoint == null) 
+            if (virtuosoEndpoint == null)
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, "VIRTUOSO_ENDPOINT environment variable not set");
             }
@@ -19,27 +19,27 @@ namespace RDFApi.Controllers
             try
             {
                 string queryResult = await new VirtuosoDataStore(virtuosoEndpoint).Query(query);
-                
-                return Ok(queryResult); 
+
+                return Ok(queryResult);
             }
             catch (Exception e)
             {
-                return StatusCode((int)HttpStatusCode.BadRequest, e.Message);
+                return StatusCode(503, e.Message);
             }
         }
-        
+
         [HttpPost, Route("/[controller]/")]
         public async Task<IActionResult> Insert(string turtle, string? graph)
         {
             string? virtuosoEndpoint = Environment.GetEnvironmentVariable("VIRTUOSO_ENDPOINT");
-            if (virtuosoEndpoint == null) 
+            if (virtuosoEndpoint == null)
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, "VIRTUOSO_ENDPOINT environment variable not set");
             }
 
             try
             {
-                string insertResponse = !String.IsNullOrEmpty(graph) ? 
+                string insertResponse = !string.IsNullOrEmpty(graph) ?
                     await new VirtuosoDataStore(virtuosoEndpoint).InsertTurtleGraph(turtle, graph) :
                     await new VirtuosoDataStore(virtuosoEndpoint).InsertTurtleGraph(turtle);
 
@@ -47,7 +47,7 @@ namespace RDFApi.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode((int)HttpStatusCode.BadRequest, e.Message);
+                return StatusCode(503, e.Message);
             }
         }
     }
